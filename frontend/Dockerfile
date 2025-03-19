@@ -1,24 +1,46 @@
-# Stage 1: Build the React App
-FROM node:18-alpine as build
+# # Step 1: Build Angular App
+# FROM node:18 AS build
+# WORKDIR /app
+# COPY package.json package-lock.json ./
+# RUN npm install
+# COPY . .
+# RUN npm run build --configuration=production
 
+# # Step 2: Use Nginx to Serve Angular
+# FROM nginx:alpine
+# WORKDIR /usr/share/nginx/html
+
+# # Copy built Angular files
+# COPY --from=build /app/dist/frontend .
+
+# # Copy the custom Nginx config
+# COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+# # Expose port 80
+# EXPOSE 80
+
+# # Start Nginx
+# CMD ["nginx", "-g", "daemon off;"]
+# Step 1: Build Angular App
+# Step 1: Build Angular App
+FROM node:18 AS build
 WORKDIR /app
-
-# Copy package.json and install dependencies
 COPY package.json package-lock.json ./
 RUN npm install
-
-# Copy all files and build the app
 COPY . .
-RUN npm run build
+RUN npm run build --configuration=production
 
-# Stage 2: Serve the React App with Nginx
-FROM nginx:alpine
+# Step 2: Serve with http-server
+FROM node:18
+WORKDIR /usr/src/app
+RUN npm install -g http-server  # Install http-server globally
 
-# Copy built React files to Nginx
-COPY --from=build /app/build /usr/share/nginx/html
+# Copy built Angular files from the previous stage
+COPY --from=build /app/dist/frontend .
 
-# Expose port 80 for web access
+# Expose port 80
 EXPOSE 80
 
-# Start Nginx
-CMD ["nginx", "-g", "daemon off;"]
+# Start the http-server and serve files from the current directory
+CMD ["http-server", "-p", "80", "."]
+

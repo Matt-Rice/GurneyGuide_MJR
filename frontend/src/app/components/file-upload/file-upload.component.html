@@ -1,0 +1,7 @@
+<h3>Upload DXF File</h3>
+<input type="file" (change)="onFileSelected($event)">
+<button (click)="onUpload()" [disabled]="!selectedFile">Upload</button>
+
+@if (uploadResponse) {
+    <p>{{ uploadResponse }}</p>
+}

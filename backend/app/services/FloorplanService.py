@@ -1,11 +1,12 @@
-from backend.app.processing.GridPathfinder import GridPathfinder
-from backend.app.processing.DXFProcessor import DXFProcessor
-from backend.app.DbContext import DBContext
+from app.processing.GridPathfinder import GridPathfinder
+from app.processing.DXFProcessor import DXFProcessor
+from app.DbContext import DBContext
+import os
 
 class FloorplanService():
     
     def __init__(self):
-        self.db_context = DBContext()
+        self.db_context = DBContext(os.getenv("DATABASE_URL"))
 
     def parse_dxf(self, file_path, wall_layer="Walls", room_layer="Rooms", entrance_layer="Entrance"):
         """
@@ -42,7 +43,7 @@ class FloorplanService():
         self.pathfinder = GridPathfinder(walls, rooms, entrance, grid_size)
         path = self.pathfinder.find_path(room_name)
 
-        return path
+        return self.pathfinder.display_grid(entrance, rooms, path)
     
     def get_floorplan_by_id(self, dxf_id):
         """Returns specific floorplan's details by ID"""
@@ -53,4 +54,19 @@ class FloorplanService():
         grid_size = dxf_data["grid_size"]
 
         return walls, rooms, entrance, grid_size
+    
+    def get_all_floorplans(self):
+        """Returns all floorplans that are currently in the database"""
+        return self.db_context.get_all_floorplans()
+    
+    def delete_floorplan(self, dxf_id):
+        """Deletes a floorplan with the specified id"""
+        success = self.db_context.delete_floorplan(dxf_id)
+
+if __name__ == '__main__':
+    file_path = 'cool.dxf'
+    service = FloorplanService()
+    id = service.parse_dxf(file_path)
+    floorplan = service.get_floorplan_by_id(id)
+    image = service.find_path(id, 101)
 

@@ -1,0 +1,15 @@
+<h3>Find a Path</h3>
+<label for="floorplan">Floorplan ID:</label>
+<input type="number" [value]="floorplanId">
+
+<label for="room">Room Number:</label>
+<input type="number" [value]="roomNum">
+
+<button (click)="findPath()">Find Path</button>
+
+@if(path){
+    <div>
+    <h4>Path Found:</h4>
+    <pre>{{ path | json }}</pre>
+    </div>
+}

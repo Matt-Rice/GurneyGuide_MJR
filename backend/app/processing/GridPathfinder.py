@@ -1,7 +1,10 @@
 import numpy as np
 import heapq
-from DXFProcessor import DXFProcessor
+# from DXFProcessor import DXFProcessor
+from app.processing.DXFProcessor import DXFProcessor
 import matplotlib.pyplot as plt
+import io
+import base64
 
 class GridPathfinder:
     def __init__(self, walls, rooms, entrance, grid_size = (50, 50)):
@@ -12,10 +15,10 @@ class GridPathfinder:
         :param grid_size: Defines the size of the grid
         """
         self.grid_size = grid_size  # Define a fixed grid resolution
-        self.grid = np.zeros((grid_size[0], grid_size[1]), dtype=int) # Fills grid with zeroes
+        self.grid = np.zeros((int(grid_size[0]), int(grid_size[1])), dtype=int) # Fills grid with zeroes
         self.rooms = rooms
         self.entrance = entrance
-        self.start = self.to_grid(entrance[0]["coordinates"])
+        self.start = self.to_grid(entrance["coordinates"])
         self.targets = {room["text"]: self.to_grid(room["coordinates"]) for room in rooms}
 
         self.mark_walls(walls) # Mark walls as 1
@@ -39,10 +42,9 @@ class GridPathfinder:
         :param walls: Listof wall line segments from the dxf file
         """
         for wall in walls:
-            if wall["type"] == "LINE":
-                start = self.to_grid(wall["start"])
-                end = self.to_grid(wall["end"])
-                self.bresenham_line(start, end)
+            start = self.to_grid(wall["start"])
+            end = self.to_grid(wall["end"])
+            self.bresenham_line(start, end)
 
     def bresenham_line(self, start, end):
         """
@@ -52,6 +54,8 @@ class GridPathfinder:
         """
         x1, y1 = start
         x2, y2 = end
+        x1, y1, x2, y2 = int(x1), int(y1), int(x2), int(y2)
+
         dx, dy = abs(x2 - x1), abs(y2 - y1)
         sx, sy = (1 if x1 < x2 else -1), (1 if y1 < y2 else -1)
         err = dx - dy
@@ -124,51 +128,80 @@ class GridPathfinder:
         path.reverse()
         return path
 
+    # def display_grid(self, entrance, rooms, path):
+    #     """
+    #     Displays the grid representation with:
+    #     - Walls as black (1)
+    #     - Walkable areas as white (0)
+    #     - Entrance as blue (2)
+    #     - Rooms as green (3)
+    #     - Path as red 
+    #     """
+    #     grid_display = np.full(self.grid.shape, 0)  # Start with walls as black
+
+    #     # Set walkable areas (0) to white
+    #     grid_display[self.grid == 0] = 1  # White for walkable space
+
+    #     # Mark entrance as blue (value 0.5)
+    #     if entrance:
+    #         ex, ey = self.to_grid(entrance[0]["coordinates"])
+    #         grid_display[ex, ey] = 0.5  # Blue
+
+    #     # Mark rooms as green (value 0.7)
+    #     if rooms:
+    #         for room in rooms:
+    #             rx, ry = self.to_grid(room["coordinates"])
+    #             grid_display[rx, ry] = 0.7  # Green
+
+    #     # Mark path as red (0.3)
+    #     if path:
+    #         for px, py in path:
+    #             grid_display[px, py] = 0.3 # Red
+
+    #     # Plot the grid
+    #     plt.figure(figsize=(10, 10))
+    #     plt.imshow(grid_display, cmap='gray', origin="upper")
+
+    #     # Add entrance and room labels
+    #     plt.text(ey, ex, "S", ha='center', va='center', color="blue", fontsize=12, fontweight='bold')  # Entrance (S)
+    #     for room in rooms:
+    #         rx, ry = self.to_grid(room["coordinates"])
+    #         plt.text(ry, rx, room["text"], ha='center', va='center', color="green", fontsize=10, fontweight='bold')
+
+    #     plt.xticks([])
+    #     plt.yticks([])
+    #     plt.title("Grid Representation")
+    #     plt.show()
+
     def display_grid(self, entrance, rooms, path):
-        """
-        Displays the grid representation with:
-        - Walls as black (1)
-        - Walkable areas as white (0)
-        - Entrance as blue (2)
-        - Rooms as green (3)
-        - Path as red 
-        """
-        grid_display = np.full(self.grid.shape, 0)  # Start with walls as black
+        """Generate a grid image and return it as base64."""
+        plt.figure(figsize=(10, 10))
+        plt.imshow(self.grid, cmap="gray", origin="upper")
 
-        # Set walkable areas (0) to white
-        grid_display[self.grid == 0] = 1  # White for walkable space
+        # Add Entrance & Rooms
+        ex, ey = self.start
+        plt.text(ey, ex, "S", ha='center', va='center', color="blue", fontsize=12, fontweight='bold')
+        for room_name, (rx, ry) in self.targets.items():
+            plt.text(ry, rx, room_name, ha='center', va='center', color="green", fontsize=10, fontweight='bold')
 
-        # Mark entrance as blue (value 0.5)
-        if entrance:
-            ex, ey = self.to_grid(entrance[0]["coordinates"])
-            grid_display[ex, ey] = 0.5  # Blue
-
-        # Mark rooms as green (value 0.7)
-        if rooms:
-            for room in rooms:
-                rx, ry = self.to_grid(room["coordinates"])
-                grid_display[rx, ry] = 0.7  # Green
-
-        # Mark path as red (0.3)
+        # Mark path in red
         if path:
             for px, py in path:
-                grid_display[px, py] = 0.3 # Red
-
-        # Plot the grid
-        plt.figure(figsize=(10, 10))
-        plt.imshow(grid_display, cmap='gray', origin="upper")
-
-        # Add entrance and room labels
-        plt.text(ey, ex, "S", ha='center', va='center', color="blue", fontsize=12, fontweight='bold')  # Entrance (S)
-        for room in rooms:
-            rx, ry = self.to_grid(room["coordinates"])
-            plt.text(ry, rx, room["text"], ha='center', va='center', color="green", fontsize=10, fontweight='bold')
+                plt.scatter(py, px, color="red", s=10)  # Scatter points in red
 
         plt.xticks([])
         plt.yticks([])
-        plt.title("Grid Representation")
-        plt.show()
 
+        # Save to memory
+        buf = io.BytesIO()
+        plt.savefig(buf, format="png")
+        buf.seek(0)
+
+        # Convert image to base64
+        image_base64 = base64.b64encode(buf.getvalue()).decode("utf-8")
+        plt.close()
+
+        return image_base64
 
 
 
