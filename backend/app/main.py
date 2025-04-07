@@ -1,5 +1,6 @@
 from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from app.services.FloorplanService import FloorplanService
 import shutil
 import os
@@ -95,10 +96,10 @@ def get_path(dxf_id: int, room_name: str):
     """
     Finds and returns the shortest path from entrance to the specified room.
     """
-    path = floorplan_service.find_path(dxf_id, room_name)
-    if not path:
+    response = floorplan_service.find_path(dxf_id, room_name)
+    if not response:
         raise HTTPException(status_code=404, detail=f"No path found to room {room_name}.")
-    return {"path": path}
+    return response
 
 
 # 📌 **5. Delete a Floorplan**

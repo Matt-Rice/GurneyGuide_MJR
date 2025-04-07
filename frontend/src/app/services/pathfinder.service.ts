@@ -28,7 +28,7 @@ export class PathfinderService {
     return this.http.get(`${this.baseUrl}/floorplan/${id}`);
   }
 
-  findPath(id: number, roomNum: number): Observable<any> {
+  findPath(id: number, roomNum: string): Observable<any> {
     return this.http.get(`${this.baseUrl}/floorplan/${id}/path/${roomNum}`);
   }
 
