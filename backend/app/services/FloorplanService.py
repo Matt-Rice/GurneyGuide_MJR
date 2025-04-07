@@ -1,6 +1,9 @@
 from app.processing.GridPathfinder import GridPathfinder
 from app.processing.DXFProcessor import DXFProcessor
 from app.DbContext import DBContext
+# from processing.GridPathfinder import GridPathfinder
+# from processing.DXFProcessor import DXFProcessor
+# from DbContext import DBContext
 import os
 
 class FloorplanService():
@@ -37,14 +40,15 @@ class FloorplanService():
     def find_path(self, dxf_id, room_name):
         """Finds and returns the path for a given room"""
         # Get properties
-        walls, rooms, entrance, grid_size = self.get_floorplan_by_id(dxf_id)
-
+        dxf_data = self.get_floorplan_by_id(dxf_id)
+        walls, rooms, entrance, grid_size = dxf_data["walls"], dxf_data["rooms"], dxf_data["entrance"], dxf_data["grid_size"]
         # Get Pth
         self.pathfinder = GridPathfinder(walls, rooms, entrance, grid_size)
         path = self.pathfinder.find_path(room_name)
 
-        return self.pathfinder.display_grid(entrance, rooms, path)
-    
+        # return self.pathfinder.display_grid(entrance, rooms, path)
+        return {"path": path, "walls": walls, "rooms": rooms, "entrance": entrance}
+
     def get_floorplan_by_id(self, dxf_id):
         """Returns specific floorplan's details by ID"""
         dxf_data = self.db_context.get_dxf_file(dxf_id)
@@ -53,7 +57,8 @@ class FloorplanService():
         entrance = dxf_data["entrance"]
         grid_size = dxf_data["grid_size"]
 
-        return walls, rooms, entrance, grid_size
+        print(f"This is the entrance\n {entrance}\n This is the walls\n {walls}\n This is the rooms\n {rooms}\n")
+        return {"walls": walls, "rooms": rooms, "entrance": entrance, "grid_size": grid_size}
     
     def get_all_floorplans(self):
         """Returns all floorplans that are currently in the database"""
@@ -66,7 +71,8 @@ class FloorplanService():
 if __name__ == '__main__':
     file_path = 'cool.dxf'
     service = FloorplanService()
-    id = service.parse_dxf(file_path)
-    floorplan = service.get_floorplan_by_id(id)
+    # id = service.parse_dxf(file_path)
+    floorplan = service.get_floorplan_by_id(17)
+    print(floorplan)
     image = service.find_path(id, 101)
 

@@ -3,6 +3,7 @@ import heapq
 # from DXFProcessor import DXFProcessor
 from app.processing.DXFProcessor import DXFProcessor
 import matplotlib.pyplot as plt
+from matplotlib import colors
 import io
 import base64
 
@@ -18,7 +19,9 @@ class GridPathfinder:
         self.grid = np.zeros((int(grid_size[0]), int(grid_size[1])), dtype=int) # Fills grid with zeroes
         self.rooms = rooms
         self.entrance = entrance
+        print(f"entrance: {self.entrance}")
         self.start = self.to_grid(entrance["coordinates"])
+        print(f"start: {self.start}")
         self.targets = {room["text"]: self.to_grid(room["coordinates"]) for room in rooms}
 
         self.mark_walls(walls) # Mark walls as 1
@@ -173,10 +176,11 @@ class GridPathfinder:
     #     plt.title("Grid Representation")
     #     plt.show()
 
-    def display_grid(self, entrance, rooms, path):
+    def display_grid(self, entrance, rooms, path = None, img = True):
         """Generate a grid image and return it as base64."""
         plt.figure(figsize=(10, 10))
-        plt.imshow(self.grid, cmap="gray", origin="upper")
+
+        plt.imshow(self.grid, cmap="gray_r", origin="upper")
 
         # Add Entrance & Rooms
         ex, ey = self.start
@@ -192,22 +196,29 @@ class GridPathfinder:
         plt.xticks([])
         plt.yticks([])
 
-        # Save to memory
-        buf = io.BytesIO()
-        plt.savefig(buf, format="png")
-        buf.seek(0)
+        if img:
+            # Save to memory
+            buf = io.BytesIO()
+            plt.savefig(buf, format="png")
+            buf.seek(0)
 
-        # Convert image to base64
-        image_base64 = base64.b64encode(buf.getvalue()).decode("utf-8")
-        plt.close()
+            # Convert image to base64
+            image_base64 = base64.b64encode(buf.getvalue()).decode("utf-8")
+            plt.close()
+            return image_base64
+        
+        else:
+            plt.title('Grid Representation')
+            plt.show()
+            return 0
 
-        return image_base64
+        
 
 
 
 
 if __name__ == "__main__":
-    processor = DXFProcessor(file_path="cool.dxf")
+    processor = DXFProcessor(file_path="good.dxf")
     processor.parse_dxf()
 
     walls = processor.get_walls()
@@ -223,8 +234,9 @@ if __name__ == "__main__":
     pathfinder = GridPathfinder(walls, rooms, entrance, grid_size)
 
     # Find shortest path to a specific room
-    room_name = "101"
+    room_name = "102"
     path = pathfinder.find_path(room_name)
     print(f"Path to {room_name}:", path)
 
-    pathfinder.display_grid(entrance, rooms, path)
+    pathfinder.display_grid(entrance, rooms, img=False)
+    pathfinder.display_grid(entrance, rooms, path, img=False)

@@ -1,0 +1,40 @@
+<h3>Available Floorplans</h3>
+<ul>
+    @for (floorplan of floorplans; track floorplan.id) {
+        <li>
+        {{ floorplan.id }} 
+        <button (click)="selectFloorplan(floorplan.id)">View</button>
+        <button (click)="deleteFloorplan(floorplan.id)">Delete</button>
+        </li>
+    }
+</ul>
+
+<svg *ngIf="walls.length > 0" [attr.width]="500" [attr.height]="500">
+    <!-- Walls -->
+    <line *ngFor="let wall of walls"
+          [attr.x1]="wall.start[0] * cellSize"
+          [attr.y1]="wall.start[1] * cellSize"
+          [attr.x2]="wall.end[0] * cellSize"
+          [attr.y2]="wall.end[1] * cellSize"
+          stroke="black" stroke-width="2" />
+  
+    <!-- Path -->
+    <circle *ngFor="let point of path"
+            [attr.cx]="point[0] * cellSize + cellSize / 2"
+            [attr.cy]="point[1] * cellSize + cellSize / 2"
+            r="3" fill="red" />
+  
+    <!-- Entrance -->
+    <circle *ngIf="entrance"
+            [attr.cx]="entrance.coordinates[0] * cellSize + cellSize / 2"
+            [attr.cy]="entrance.coordinates[1] * cellSize + cellSize / 2"
+            r="4" fill="blue" />
+  
+    <!-- Room labels -->
+    <text *ngFor="let room of rooms"
+          [attr.x]="room.coordinates[0] * cellSize"
+          [attr.y]="room.coordinates[1] * cellSize"
+          font-size="8" fill="green">
+      {{ room.text }}
+    </text>
+  </svg>
