@@ -4,11 +4,11 @@ Efficient navigation in healthcare facilities is crucial for transporting patien
 ## How to run
 
 ### 1. First clone the repository 
-```bash git clone https://github.com/Matt-Rice/GurneyGuide_MJR.git```
+```git clone https://github.com/Matt-Rice/GurneyGuide_MJR.git```
 
 ### 2. Download Docker Desktop and run it: https://www.docker.com/products/docker-desktop/
    
 ### 3. Using the terminal, navigate to the directory in which you cloned the repository into and run the following command:
-   ```cmd docker-compose up --build```
+   ```docker-compose up --build```
    
 ### 4. Navigate to http://localhost:4200 to view the frontend
