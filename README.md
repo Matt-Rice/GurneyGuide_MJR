@@ -11,4 +11,4 @@ Efficient navigation in healthcare facilities is crucial for transporting patien
 ### 3. Using the terminal, navigate to the directory in which you cloned the repository into and run the following command:
    ```cmd docker-compose up --build```
    
-## 5. Navigate to http://localhost:4200 to view the frontend
+### 4. Navigate to http://localhost:4200 to view the frontend
