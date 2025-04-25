@@ -131,51 +131,6 @@ class GridPathfinder:
         path.reverse()
         return path
 
-    # def display_grid(self, entrance, rooms, path):
-    #     """
-    #     Displays the grid representation with:
-    #     - Walls as black (1)
-    #     - Walkable areas as white (0)
-    #     - Entrance as blue (2)
-    #     - Rooms as green (3)
-    #     - Path as red 
-    #     """
-    #     grid_display = np.full(self.grid.shape, 0)  # Start with walls as black
-
-    #     # Set walkable areas (0) to white
-    #     grid_display[self.grid == 0] = 1  # White for walkable space
-
-    #     # Mark entrance as blue (value 0.5)
-    #     if entrance:
-    #         ex, ey = self.to_grid(entrance[0]["coordinates"])
-    #         grid_display[ex, ey] = 0.5  # Blue
-
-    #     # Mark rooms as green (value 0.7)
-    #     if rooms:
-    #         for room in rooms:
-    #             rx, ry = self.to_grid(room["coordinates"])
-    #             grid_display[rx, ry] = 0.7  # Green
-
-    #     # Mark path as red (0.3)
-    #     if path:
-    #         for px, py in path:
-    #             grid_display[px, py] = 0.3 # Red
-
-    #     # Plot the grid
-    #     plt.figure(figsize=(10, 10))
-    #     plt.imshow(grid_display, cmap='gray', origin="upper")
-
-    #     # Add entrance and room labels
-    #     plt.text(ey, ex, "S", ha='center', va='center', color="blue", fontsize=12, fontweight='bold')  # Entrance (S)
-    #     for room in rooms:
-    #         rx, ry = self.to_grid(room["coordinates"])
-    #         plt.text(ry, rx, room["text"], ha='center', va='center', color="green", fontsize=10, fontweight='bold')
-
-    #     plt.xticks([])
-    #     plt.yticks([])
-    #     plt.title("Grid Representation")
-    #     plt.show()
-
     def display_grid(self, entrance, rooms, path = None, img = True):
         """Generate a grid image and return it as base64."""
         plt.figure(figsize=(10, 10))
