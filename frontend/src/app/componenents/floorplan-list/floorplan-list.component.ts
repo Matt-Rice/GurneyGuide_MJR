@@ -3,6 +3,7 @@ import { PathfinderService } from '../../services/pathfinder.service';
 import { ChangeDetectorRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { FileUploadComponent } from '../file-upload/file-upload.component';
 import { NgFor } from '@angular/common';
 import { NgIf } from '@angular/common';
 
@@ -10,7 +11,7 @@ import { NgIf } from '@angular/common';
   selector: 'app-floorplan-list',
   templateUrl: './floorplan-list.component.html',
   styleUrls: ['./floorplan-list.component.scss'],
-  imports: [FormsModule, NgFor, NgIf]
+  imports: [FormsModule, NgFor, NgIf, FileUploadComponent]
 })
 export class FloorplanListComponent implements OnInit {
   floorplans: any[] = [];

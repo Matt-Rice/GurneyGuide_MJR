@@ -35,8 +35,6 @@ os.makedirs(UPLOAD_DIR, exist_ok=True)
 def root():
     return {"message": "Welcome to the Gurney Guide API!"}
 
-
-# 📌 **1. Upload and Process DXF File**
 @app.post("/upload-dxf/")
 async def upload_dxf(file: UploadFile = File(...)):
     """
@@ -64,8 +62,6 @@ async def upload_dxf(file: UploadFile = File(...)):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error processing DXF: {str(e)}")
 
-
-# 📌 **2. Retrieve All Floorplans**
 @app.get("/floorplans/")
 def get_all_floorplans():
     """
@@ -77,8 +73,6 @@ def get_all_floorplans():
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-
-# 📌 **3. Get a Specific Floorplan**
 @app.get("/floorplan/{dxf_id}")
 def get_floorplan(dxf_id: int):
     """
@@ -89,8 +83,6 @@ def get_floorplan(dxf_id: int):
         raise HTTPException(status_code=404, detail="DXF File not found.")
     return dxf_data
 
-
-# 📌 **4. Find Path to a Room**
 @app.get("/floorplan/{dxf_id}/path/{room_name}")
 def get_path(dxf_id: int, room_name: str):
     """
@@ -101,8 +93,6 @@ def get_path(dxf_id: int, room_name: str):
         raise HTTPException(status_code=404, detail=f"No path found to room {room_name}.")
     return response
 
-
-# 📌 **5. Delete a Floorplan**
 @app.delete("/floorplan/{dxf_id}")
 def delete_floorplan(dxf_id: int):
     """

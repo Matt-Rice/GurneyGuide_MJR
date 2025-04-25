@@ -1,11 +1,12 @@
-<h3>Find a Path</h3>
+<h1 class="text-2xl font-bold text-gray-800 mb-4 border-b-2 border-gray-300 pb-2">Pathfinder</h1>
+<h3>Enter the ID of an existing floorplan along with the room you want to navigate to.</h3>
 <label for="floorplan">Floorplan ID:</label>
-<input type="number" [(ngModel)]="floorplanId">
+<input class="px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" type="number" [(ngModel)]="floorplanId">
 
 <label for="room">Room Number:</label>
-<input type="number" [(ngModel)]="roomNum">
+<input class="px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" type="number" [(ngModel)]="roomNum">
 
-<button (click)="findPath()">Find Path</button>
+<button class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 shadow transition" (click)="findPath()">Find Path</button>
 
 <svg *ngIf="walls.length > 0" [attr.width]="500" [attr.height]="500">
     <!-- Walls -->

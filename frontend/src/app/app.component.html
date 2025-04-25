@@ -1,4 +1,14 @@
-<h1 class="title">GurneyGuide</h1>
-<app-file-upload></app-file-upload>
-<app-floorplan-list></app-floorplan-list>
-<app-pathfinder></app-pathfinder>
+<header class="bg-gradient-to-r from-blue-600 via-purple-500 to-pink-500 text-white shadow-md">
+    <div class="max-w-7xl mx-auto px-4 py-6 flex items-center">
+      <h1 class="text-3xl font-bold flex-grow">Gurney Guide</h1>
+      <nav class="space-x-6">
+        <a routerLink="/" routerLinkActive="font-bold underline" class="hover:text-gray-200">Home</a>
+        <a routerLink="/upload" routerLinkActive="font-bold underline" class="hover:text-gray-200">Upload or View Floorplan</a>
+        <a routerLink="/pathfind" routerLinkActive="font-bold underline" class="hover:text-gray-200">Pathfinder</a>
+      </nav>
+    </div>
+</header>
+
+<main class="min-h-screen bg-gray-50 p-6">
+    <router-outlet></router-outlet>
+</main>
